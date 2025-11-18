@@ -1,0 +1,9 @@
+Connecting to server 192.168.1.1...
+Request sent from 10.0.0.25
+Response received from 172.16.0.5 at 3:45PM
+Backup node 8.8.8.8 is online
+Invalid entry: 999.999.999.999 (should not match)
+User login from 192.168.56.101
+Some text without an IP address
+127.0.0.1 is localhost
+End of log.
