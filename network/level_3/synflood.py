@@ -22,8 +22,6 @@ def client():
     msg = connection.recv(1024).decode(FORMAT)
     if msg == "syn,ack":
         print("connected.")
-    while True:
-        a =0 
     return
     
 

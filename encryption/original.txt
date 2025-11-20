@@ -1,0 +1,2 @@
+this is some data to be encrypted
+some filler data to test the encyption and decryption algorithms 
