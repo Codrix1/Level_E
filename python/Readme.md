@@ -420,7 +420,7 @@ def main():
     # ans_8()
     # ans_9()
     # ans_10()
-`
+```
 
 # Python Challenges – Level 3
 
