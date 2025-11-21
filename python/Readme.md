@@ -420,8 +420,267 @@ def main():
     # ans_8()
     # ans_9()
     # ans_10()
+`
+
+# Python Challenges – Level 3
+
+Level 3 introduces **Lists, Tuples, Dictionaries, Iteration, and Lookups**. These challenges focus on data structures and how to manipulate and search through them.
+
+All solutions are located in the `level_3.py` file.
+
+To run any challenge, simply **uncomment** the corresponding function call in the `main()` section of that file.
+
+---
+
+## 📘 Challenge List & Answers
+
+Below are the Level 3 exercises and their associated solutions.
+
+---
+
+### **1. Create a list of 10 hacker tools.**
+
+**Answer:** Implemented in `ans_1()`
+
+```python
+def ans_1():
+    list = [
+        "Nmap",
+        "Wireshark",
+        "Metasploit Framework",
+        "Aircrack-ng",
+        "John the Ripper",
+        "Hydra",
+        "Burp Suite",
+        "Nikto",
+        "sqlmap",
+        "Hashcat"
+    ]
+    return list
 ```
 
 ---
 
+### **2. Print the 3rd item in the list.**
+
+**Answer:** Implemented in `ans_2()`
+
+```python
+def ans_2():
+    print(ans_1()[2])
+    return
+```
+
+---
+
+### **3. Create a dictionary of HTTP status codes.**
+
+**Answer:** Implemented in `ans_3()`
+
+```python
+def ans_3():
+    status_codes = {
+        200: "OK",
+        201: "Created",
+        204: "No Content",
+        301: "Moved Permanently",
+        302: "Found",
+        304: "Not Modified",
+        400: "Bad Request",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Not Found",
+        405: "Method Not Allowed",
+        408: "Request Timeout",
+        409: "Conflict",
+        429: "Too Many Requests",
+        500: "Internal Server Error",
+        502: "Bad Gateway",
+        503: "Service Unavailable",
+        504: "Gateway Timeout"
+    }
+    return status_codes
+```
+
+---
+
+### **4. Count how many times each letter appears in a string.**
+
+**Answer:** Implemented in `ans_4()`
+
+```python
+def ans_4():
+    string = input("enter string: ")
+    count = {}
+    for i in string:
+        if i in count:
+            count[i] += 1
+        else:
+            count[i] = 1
+    print(count)
+    return
+```
+
+---
+
+### **5. Sort a list of random numbers without using `.sort()`.**
+
+**Answer:** Bubble sort in `ans_5()`
+
+```python
+def ans_5():
+    def bubble_sort(numbers):
+        n = len(numbers)
+        for i in range(0, n-1):
+            swapped = False
+            for j in range(0, n-i-1):
+                if numbers[j] > numbers[j+1]:
+                    numbers[j], numbers[j+1] = numbers[j+1], numbers[j]
+                    swapped = True
+            if not swapped:
+                break
+        return array
+
+    array = [3, 34, 5, 56, 78, 2, 12, 24]
+    print(bubble_sort(array))
+    return
+```
+
+---
+
+### **6. Store ports and services in a dictionary and allow user queries.**
+
+**Answer:** Implemented in `ans_6()`
+
+```python
+def ans_6():
+    search = True
+    ports = {
+        20: "FTP (Data Transfer)",
+        21: "FTP (Control)",
+        22: "SSH",
+        23: "Telnet",
+        25: "SMTP",
+        53: "DNS",
+        80: "HTTP",
+        110: "POP3",
+        143: "IMAP",
+        443: "HTTPS"
+    }
+    while search:
+        port = int(input("please enter the port number: "))
+        if port in ports:
+            print(ports[port])
+        else:
+            print("port doesnt exist")
+        res = input("Search again [Y/n]: ")
+        if res == 'n':
+            search = False
+    return
+```
+
+---
+
+### **7. Function to remove duplicates from a list.**
+
+**Answer:** Implemented in `ans_7()`
+
+```python
+def ans_7():
+    array = [3, 34, 5, 56, 5, 3, 78, 2, 12, 56, 56, 24]
+    new = []
+    store = {}
+    for i in array:
+        if not i in store:
+            new.append(i)
+            store[i] = 1
+    print(new)
+    return
+```
+
+---
+
+### **8. Convert a list into a comma-separated string.**
+
+**Answer:** Implemented in `ans_8()`
+
+```python
+def ans_8():
+    list = [1, 'apple', 3.14, 'banana']
+    res = ', '.join(str(a) for a in list)
+    print(res)
+```
+
+---
+
+### **9. Find the longest word in a list.**
+
+**Answer:** Implemented in `ans_9()`
+
+```python
+def ans_9():
+    list = ['adljflasdoijew', 1, 'apple', 3.14, 'banana']
+    max = 0
+    word = ""
+    for i in list:
+        if len(str(i)) > max:
+            max = len(str(i))
+            word = i
+    print(word)
+    return
+```
+
+---
+
+### **10. Print the password for a given username from a dictionary.**
+
+**Answer:** Implemented in `ans_10()`
+
+```python
+def ans_10():
+    search = True
+    users = {
+        "alice": "pass123",
+        "bob": "secure456",
+        "charlie": "mypwd789",
+        "diana": "letmein01",
+        "eve": "qwerty99",
+        "frank": "hello2025",
+        "grace": "python321",
+        "heidi": "testpass77",
+        "ivan": "code654",
+        "judy": "sample111"
+    }
+    while search:
+        user = input("please enter the username: ")
+        if user in users:
+            print(users[user])
+        else:
+            print("user doesnt exist")
+        res = input("Search again [Y/n]: ")
+        if res == 'n':
+            search = False
+```
+
+---
+
+## ▶️ Running a Specific Challenge
+
+Uncomment the desired function call inside:
+
+```python
+def main():
+    ans_1()
+    # ans_2()
+    # ans_3()
+    # ans_4()
+    # ans_5()
+    # ans_6()
+    # ans_7()
+    # ans_8()
+    # ans_9()
+    # ans_10()
+```
+
+---
 
