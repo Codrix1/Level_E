@@ -410,3 +410,376 @@ def ans_10():
         print(f"{p} → {name}")
 ```
 
+# Networking - Level 3
+
+### Q1: Write a simple TCP client-server program that sends a message from client to server.
+
+**Answer:**
+
+* Implemented in **tcp_server.py** (TCP server) and **client.py** (TCP client).
+* TCP server listens on port 5050 and handles multiple clients using threads.
+* Client connects, sends a message, and prints handshake status.
+
+**tcp_server.py**
+
+```python
+import socket
+import threading
+
+PORT = 5050
+SERVER = socket.gethostbyname(socket.gethostname())
+FORMAT = "utf-8"
+ADDR = (SERVER, PORT)
+MAX_BYTES = 1024
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(ADDR)
+
+def handle_client(conn, addr):
+    print(f"[CONNECTION ESTABLISHED] {addr}")
+    connected = True
+
+    while connected:
+        msg = conn.recv(MAX_BYTES).decode(FORMAT)
+        if msg == "syn":
+            conn.send("syn,ack".encode(FORMAT))
+            msg = conn.recv(MAX_BYTES).decode(FORMAT)
+            if msg == "ack,bak":
+                print("[TCP] Handshake successful.")
+            else:
+                print("[TCP] Handshake failed.")
+            connected = False
+        elif msg == "":
+            connected = False
+
+    conn.close()
+    print(f"[DISCONNECTED] {addr}")
+
+def start_server():
+    server.listen()
+    print(f"[LISTENING] TCP Server running on {SERVER}:{PORT}")
+    while True:
+        conn, addr = server.accept()
+        thread = threading.Thread(target=handle_client, args=(conn, addr))
+        thread.start()
+        print(f"[ACTIVE CONNECTIONS]: {threading.active_count() - 1}")
+
+if __name__ == "__main__":
+    start_server()
+```
+
+**client.py**
+
+```python
+import socket
+
+PORT = 5050
+SERVER = "192.168.0.26"
+ADDR = (SERVER, PORT)
+FORMAT = "utf-8"
+
+def connect_tcp():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(ADDR)
+    return client
+
+def connect_udp():
+    client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    client.connect(ADDR)
+    return client
+
+def send(client, msg):
+    message = msg.encode(FORMAT)
+    client.send(message)
+
+def start():
+    answer = int(input("Press 1 for TCP connection, 0 for UDP connection: "))
+
+    match answer:
+        case 0:
+            connection = connect_udp()
+            send(connection, "hi")
+            print("[UDP] Message sent to server.")
+        case 1:
+            connection = connect_tcp()
+            send(connection, "syn")
+            msg = connection.recv(1024).decode(FORMAT)
+            if msg == "syn,ack":
+                send(connection, "ack,bak")
+                print("[TCP] Handshake complete.")
+            else:
+                print("[TCP] Handshake failed.")
+            connection.close()
+        case _:
+            print("Invalid option.")
+            return
+
+    print("Disconnected.")
+
+if __name__ == "__main__":
+    start()
+```
+
+---
+
+### Q2: Modify the above program to work with UDP instead of TCP.
+
+**Answer:**
+
+* Implemented in **udp_server.py** (UDP server) and **client.py**.
+* UDP server listens on port 5050 and echoes back “ack”.
+* Client sends a message via UDP and prints confirmation.
+
+**udp_server.py**
+
+```python
+import socket
+
+PORT = 5050
+SERVER = socket.gethostbyname(socket.gethostname())
+FORMAT = "utf-8"
+ADDR = (SERVER, PORT)
+MAX_BYTES = 1024
+
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server.bind(ADDR)
+
+def start_server():
+    print(f"[LISTENING] UDP Server running on {SERVER}:{PORT}")
+    while True:
+        msg, addr = server.recvfrom(MAX_BYTES)
+        print(f"[UDP RECEIVED] {msg.decode(FORMAT)} from {addr}")
+        server.sendto("ack".encode(FORMAT), addr)
+
+if __name__ == "__main__":
+    start_server()
+```
+
+---
+
+### Q3: Create a TCP server that listens on port 9999 and responds with "Hello, Client!".
+
+**Answer:**
+
+* Implemented in **ans_3.py** (UDP implementation in provided code).
+
+```python
+import socket
+
+PORT = 9999
+SERVER = socket.gethostbyname(socket.gethostname())
+FORMAT = "utf-8"
+ADDR = (SERVER, PORT)
+MAX_BYTES = 1024
+
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server.bind(ADDR)
+
+def start_server():
+    print(f"[LISTENING] UDP Server running on {SERVER}:{PORT}")
+    while True:
+        msg, addr = server.recvfrom(MAX_BYTES)
+        print(f"[UDP RECEIVED] {msg.decode(FORMAT)} from {addr}")
+        server.sendto("Hello, Client!".encode(FORMAT), addr)
+
+if __name__ == "__main__":
+    start_server()
+```
+
+---
+
+### Q4: Write a function that measures the round-trip time (RTT) of a TCP connection.
+
+**Answer:**
+
+* Implemented in **ans_4.py**.
+* Connects to port 80 of a remote server and measures time.
+
+```python
+import socket
+import time
+
+def measure_rtt(address):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    start_time = time.time()
+    sock.connect((address, 80))
+    rtt = time.time() - start_time
+    sock.close()
+    return rtt
+
+rtt = measure_rtt('google.com')
+print(f"RTT: {rtt}s")
+```
+
+---
+
+### Q5: Simulate a basic SYN flood attack (for controlled environments).
+
+**Answer:**
+
+* Implemented in **synflood.py**.
+* Uses threads to simulate multiple TCP “SYN” messages to the server.
+
+```python
+import socket
+import threading
+
+PORT = 5050
+SERVER = "192.168.0.26"
+ADDR = (SERVER, PORT)
+FORMAT = "utf-8"
+
+def connect_tcp():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(ADDR)
+    return client
+
+def send(client, msg):
+    message = msg.encode(FORMAT)
+    client.send(message)
+
+def client():
+    connection = connect_tcp()
+    send(connection, "syn")
+    msg = connection.recv(1024).decode(FORMAT)
+    if msg == "syn,ack":
+        print("connected.")
+    return
+    
+def start():
+    answer = int(input("enter the number of clients for the attack: "))
+    for i in range(answer):
+        thread = threading.Thread(target=client)
+        thread.start()
+
+if __name__ == "__main__":
+    start()
+```
+
+---
+
+### Q6: Write a script that monitors and logs all incoming TCP connections.
+
+**Answer:**
+
+* Implemented in **ans_6.py** using `psutil`.
+
+```python
+import psutil
+
+def get_active_connections():
+    connections = psutil.net_connections(kind='tcp')
+    connection_details = []
+
+    for conn in connections:
+        local_address = f"{conn.laddr.ip}:{conn.laddr.port}"
+        foreign_address = f"{conn.raddr.ip}:{conn.raddr.port}" if conn.raddr else "N/A"
+        state = conn.status
+        pid = conn.pid
+        process_name = None
+        if pid:
+            try:
+                process = psutil.Process(pid)
+                process_name = process.name()
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                process_name = "N/A"
+
+        connection_details.append({
+            "Local Address": local_address,
+            "Foreign Address": foreign_address,
+            "State": state,
+            "PID": pid,
+            "Process Name": process_name,
+        })
+
+    return connection_details
+
+def display_connections(connections):
+    print(f"{'Local Address':<30} {'Foreign Address':<30} {'State':<15} {'PID':<10} {'Process Name':<25}")
+    print("=" * 120)
+    for conn in connections:
+        print(f"{conn['Local Address']:<30} {conn['Foreign Address']:<30} {conn['State']:<15} {conn['PID']:<10} {conn['Process Name']}")
+
+if __name__ == "__main__":
+    active_connections = get_active_connections()
+    display_connections(active_connections)
+```
+
+---
+
+### Q7: Implement a TCP handshake simulation in Python.
+
+**Answer:**
+
+* Already implemented in **tcp_server.py** + **client.py**.
+* The handshake is simulated with `"syn"`, `"syn,ack"`, `"ack,bak"` messages.
+
+---
+
+### Q8: Create a script that tests whether a remote server allows telnet access (port 23).
+
+**Answer:**
+
+* Implemented in **ans_8.py**.
+
+```python
+import socket
+
+def test_port(address: str, dest_port: int) -> bool:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            print("waiting for connection")
+            if sock.connect_ex((address, dest_port)) == 0:
+                print("connected")
+                return True
+        return False
+    except (OSError, ValueError) as e:
+        print(f"⚠️ Error: {e}")
+        return False
+    
+def main():
+    address = "64.233.160.0"
+    port = 23
+
+    if test_port(address=address , dest_port=port):
+        print("connection")
+    else:
+        print("no connection")
+
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+### Q9: Write a UDP client that sends a DNS request manually to 8.8.8.8.
+
+**Answer:**
+
+* Implemented in **ans_9.py** (reverse DNS lookup).
+
+```python
+import socket
+
+ip = '8.8.8.8'
+hostname = socket.gethostbyaddr(ip)
+print(f"Host name for IP {ip}: {hostname[0]}")
+```
+
+---
+
+### Q10: Implement a simple packet sniffer that captures TCP and UDP packets.
+
+**Answer:**
+
+* Implemented in **ans_10.py** using Scapy.
+
+```python
+from scapy.all import sniff
+
+def show_packet(packet):
+    print(packet.summary())
+
+print("Sniffing packets... press Ctrl+C to stop.")
+sniff(prn=show_packet, count=0)
+```
