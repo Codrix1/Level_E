@@ -1,16 +1,16 @@
 def ans_1():
     string = "encode"
-    encoded = string.encode("utf-8")
-    decoded = encoded.decode("utf-8")
+    encoded  = base64.b64encode(string.encode())
+    decoded = base64.b64decode(encoded).decode()
     print(encoded)
     print(decoded)
     return
 
 
 def ans_2():
-    string = 890
-    hexdecimal = hex(string)
-    print(hexdecimal)
+    string = "hello man"
+    hex_value = string.encode().hex()
+    print(hex_value)
     return
 
 import hashlib
@@ -32,7 +32,7 @@ def ans_4():
 
 def ans_5():
     password = input("enter the pasword you want to hash: ")
-    hash = hashlib.sha1(password.encode("utf-8")).hexdigest()
+    hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
     print (hash)
     return
 
@@ -66,10 +66,10 @@ import base64
 
 
 def ans_8():
-    string = "testing"
-    b64 = base64.b64encode(string.encode("utf-8")).decode("utf-8")
-    print(b64)
-    return
+    file = "encryption\\original.txt"
+    with open(file, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+        print(encoded)
 
 import binascii
 import re
@@ -114,9 +114,9 @@ def main():
     # ans_5()
     # ans_6()    
     # ans_7()
-    # ans_8()
+    ans_8()
     # ans_9()
-    ans_10()
+    # ans_10()
     return
 
 
