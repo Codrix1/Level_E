@@ -136,3 +136,134 @@ for h in [hashlib.sha1, hashlib.sha256, hashlib.md5]:
 
 ---
 
+
+# 🔐 Day 2 — Symmetric Encryption & Block Modes
+
+**File:** `level2.py`
+**Topics:** AES, DES, Block Modes (ECB, CBC, CTR)
+
+---
+
+
+
+## 📘 Exercises & Solutions
+
+### 1 AES-CBC Encrypt & Decrypt
+
+Encrypts and decrypts a message using AES-CBC.
+
+```python
+data = b"secret"
+key = get_random_bytes(16)
+cipher = AES.new(key, AES.MODE_CBC)
+ciphertext = cipher.encrypt(pad(data, AES.block_size))
+
+# Decrypt
+cipher2 = AES.new(key, AES.MODE_CBC, cipher.iv)
+plaintext = unpad(cipher2.decrypt(ciphertext), AES.block_size)
+```
+
+---
+
+### 2 AES-ECB Encrypt & Decrypt
+
+Encrypts and decrypts a message using AES-ECB.
+
+```python
+cipher = AES.new(key, AES.MODE_ECB)
+ciphertext = cipher.encrypt(pad(data, AES.block_size))
+
+# Decrypt
+cipher2 = AES.new(key, AES.MODE_ECB)
+plaintext = unpad(cipher2.decrypt(ciphertext), AES.block_size)
+```
+
+---
+
+### 3 Generate Random AES Key
+
+Generates a 128-bit random AES key.
+
+```python
+key = os.urandom(16)  # 16 bytes = 128-bit key
+```
+
+---
+
+### 4 PKCS7 Pad & Unpad
+
+Pads and unpads plaintext for AES block size.
+
+```python
+padder = padding.PKCS7(algorithms.AES.block_size).padder()
+padded_data = padder.update(data) + padder.finalize()
+
+unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
+original = unpadder.update(padded_data) + unpadder.finalize()
+```
+
+---
+
+### 5 Encrypt a File with AES
+
+Encrypts a file and writes ciphertext to disk.
+
+```python
+cipher, iv = encrypt(file_bytes, key, True)  # CBC mode
+with open('encrypted.txt', 'wb') as f:
+    f.write(cipher)
+with open('iv.txt', 'wb') as f:
+    f.write(iv)
+```
+
+---
+
+### 6 Decrypt AES-Encrypted File
+
+Reads ciphertext + IV and decrypts back to plaintext.
+
+```python
+with open('encrypted.txt','rb') as f: cipher = f.read()
+with open('iv.txt','rb') as f: iv = f.read()
+decrypted = decrypt(cipher, key, True, iv)
+```
+
+---
+
+### 7 DES Encryption (ECB)
+
+Encrypts string with DES in ECB mode.
+
+```python
+key = b"8bytekey"
+plaintext = b"Hello DES!"
+ciphertext = des_encrypt_ecb(plaintext, key)
+```
+
+---
+
+### 8 AES-ECB vs AES-CBC Comparison
+
+Encrypt same plaintext in ECB and CBC to see difference in output.
+
+```python
+# ECB repeats patterns, CBC uses IV so ciphertext differs even for same plaintext
+```
+
+---
+
+### 9 Mini AES Encryption Tool
+
+User-provided key and plaintext saved to a file.
+
+```python
+plaintext = input("Text: ").encode()
+key_input = input("AES key (16/24/32 bytes): ")
+ciphertext, iv = encrypt(plaintext, key, mode_cbc)
+with open('encrypted_output.bin','wb') as f:
+    if iv: f.write(iv + ciphertext)
+    else: f.write(ciphertext)
+```
+
+
+
